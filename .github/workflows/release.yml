@@ -1,0 +1,105 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number (e.g., 1.0.0)'
+        required: true
+
+jobs:
+  build:
+    runs-on: macos-14
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Determine version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+            echo "tag=v${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+          else
+            TAG=${GITHUB_REF#refs/tags/}
+            VERSION=${TAG#v}
+            echo "version=$VERSION" >> $GITHUB_OUTPUT
+            echo "tag=$TAG" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build app
+        run: |
+          xcodebuild -project Flowly.xcodeproj \
+            -scheme Flowly \
+            -configuration Release \
+            -derivedDataPath build \
+            clean build \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Create DMG
+        run: |
+          APP_PATH="build/Build/Products/Release/Flowly.app"
+          DMG_NAME="Flowly-${{ steps.version.outputs.version }}.dmg"
+
+          # Create a temporary directory for DMG contents
+          mkdir -p dmg_contents
+          cp -R "$APP_PATH" dmg_contents/
+
+          # Create a symlink to Applications folder
+          ln -s /Applications dmg_contents/Applications
+
+          # Create the DMG
+          hdiutil create -volname "Flowly" \
+            -srcfolder dmg_contents \
+            -ov -format UDZO \
+            "$DMG_NAME"
+
+          echo "DMG_NAME=$DMG_NAME" >> $GITHUB_ENV
+
+      - name: Create ZIP
+        run: |
+          APP_PATH="build/Build/Products/Release/Flowly.app"
+          ZIP_NAME="Flowly-${{ steps.version.outputs.version }}.zip"
+
+          cd build/Build/Products/Release
+          zip -r "../../../../$ZIP_NAME" Flowly.app
+          cd ../../../../
+
+          echo "ZIP_NAME=$ZIP_NAME" >> $GITHUB_ENV
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: Flowly ${{ steps.version.outputs.version }}
+          body: |
+            ## Flowly ${{ steps.version.outputs.version }}
+
+            A macOS menu bar utility for smooth scrolling.
+
+            ### Installation
+            1. Download `Flowly-${{ steps.version.outputs.version }}.dmg`
+            2. Open the DMG and drag Flowly to your Applications folder
+            3. Launch Flowly from Applications
+            4. Grant Accessibility permission when prompted
+
+            ### Note
+            This build is unsigned. On first launch, right-click the app and select "Open" to bypass Gatekeeper.
+          files: |
+            ${{ env.DMG_NAME }}
+            ${{ env.ZIP_NAME }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

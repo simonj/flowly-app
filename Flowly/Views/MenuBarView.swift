@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MenuBarView: View {
     @ObservedObject var settingsManager = SettingsManager.shared
+    @EnvironmentObject var licenseManager: LicenseManager
     let eventTap: ScrollEventTap
 
     var body: some View {
@@ -16,10 +17,12 @@ struct MenuBarView: View {
             // Status
             HStack {
                 Circle()
-                    .fill(eventTap.hasAccessibilityPermission ? Color.green : Color.red)
+                    .fill(statusColor)
                     .frame(width: 8, height: 8)
-                Text(eventTap.hasAccessibilityPermission ? "Active" : "Permission Required")
+                Text(statusText)
                     .font(.caption)
+                Spacer()
+                licenseStatusBadge
             }
             .padding(.horizontal, 12)
             .padding(.vertical, 8)
@@ -62,5 +65,53 @@ struct MenuBarView: View {
     private func openSettingsWindow() {
         NSApp.sendAction(Selector(("showPreferencesWindow:")), to: nil, from: nil)
         NSApp.activate(ignoringOtherApps: true)
+    }
+
+    // MARK: - Status Helpers
+
+    private var statusColor: Color {
+        if !licenseManager.isFeatureEnabled {
+            return .orange
+        }
+        return eventTap.hasAccessibilityPermission ? .green : .red
+    }
+
+    private var statusText: String {
+        if !licenseManager.isFeatureEnabled {
+            return "License Required"
+        }
+        return eventTap.hasAccessibilityPermission ? "Active" : "Permission Required"
+    }
+
+    @ViewBuilder
+    private var licenseStatusBadge: some View {
+        switch licenseManager.status {
+        case .trial(let daysRemaining):
+            Text("\(daysRemaining)d trial")
+                .font(.caption2)
+                .padding(.horizontal, 6)
+                .padding(.vertical, 2)
+                .background(Color.orange.opacity(0.2))
+                .foregroundColor(.orange)
+                .cornerRadius(4)
+        case .licensed:
+            Text("Licensed")
+                .font(.caption2)
+                .padding(.horizontal, 6)
+                .padding(.vertical, 2)
+                .background(Color.green.opacity(0.2))
+                .foregroundColor(.green)
+                .cornerRadius(4)
+        case .expired:
+            Text("Expired")
+                .font(.caption2)
+                .padding(.horizontal, 6)
+                .padding(.vertical, 2)
+                .background(Color.red.opacity(0.2))
+                .foregroundColor(.red)
+                .cornerRadius(4)
+        case .validating:
+            EmptyView()
+        }
     }
 }

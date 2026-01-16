@@ -9,9 +9,32 @@ import SwiftUI
 
 struct SettingsView: View {
     @ObservedObject var settingsManager = SettingsManager.shared
+    @EnvironmentObject var licenseManager: LicenseManager
     @ObservedObject var eventTap: ScrollEventTapObservable
 
     var body: some View {
+        ZStack {
+            TabView {
+                settingsTab
+                    .tabItem {
+                        Label("Settings", systemImage: "gear")
+                    }
+
+                LicenseView()
+                    .tabItem {
+                        Label("License", systemImage: "key.fill")
+                    }
+            }
+            .frame(width: 450, height: 650)
+
+            // Show overlay when trial expired
+            if case .expired = licenseManager.status {
+                TrialExpiredOverlay()
+            }
+        }
+    }
+
+    private var settingsTab: some View {
         ScrollView {
             VStack(spacing: 16) {
                 // Header
@@ -48,7 +71,6 @@ struct SettingsView: View {
             }
             .padding()
         }
-        .frame(width: 450, height: 650)
     }
 
     // MARK: - Sections

@@ -5,7 +5,7 @@
 	};
 	objectVersion = 56;
 	objects = {
-		/* Begin PBXBuildFile section */
+/* Begin PBXBuildFile section */
 		1A0000000000000000000001 /* FlowlyApp.swift */ = {isa = PBXBuildFile; fileRef = 1A0000000000000000000002 /* FlowlyApp.swift */; };
 		1A0000000000000000000003 /* ScrollEventTap.swift */ = {isa = PBXBuildFile; fileRef = 1A0000000000000000000004 /* ScrollEventTap.swift */; };
 		1A0000000000000000000005 /* ScrollSmoother.swift */ = {isa = PBXBuildFile; fileRef = 1A0000000000000000000006 /* ScrollSmoother.swift */; };
@@ -13,11 +13,15 @@
 		1A0000000000000000000009 /* MenuBarView.swift */ = {isa = PBXBuildFile; fileRef = 1A000000000000000000000A /* MenuBarView.swift */; };
 		1A000000000000000000000B /* SettingsView.swift */ = {isa = PBXBuildFile; fileRef = 1A000000000000000000000C /* SettingsView.swift */; };
 		1A000000000000000000000D /* Info.plist */ = {isa = PBXBuildFile; fileRef = 1A000000000000000000000E /* Info.plist */; };
+		1A0000000000000000000100 /* LicenseManager.swift */ = {isa = PBXBuildFile; fileRef = 1A0000000000000000000101 /* LicenseManager.swift */; };
+		1A0000000000000000000102 /* LicenseView.swift */ = {isa = PBXBuildFile; fileRef = 1A0000000000000000000103 /* LicenseView.swift */; };
+		1A0000000000000000000104 /* TrialExpiredOverlay.swift */ = {isa = PBXBuildFile; fileRef = 1A0000000000000000000105 /* TrialExpiredOverlay.swift */; };
 		2A0000000000000000000001 /* SettingsManagerTests.swift */ = {isa = PBXBuildFile; fileRef = 2A0000000000000000000002 /* SettingsManagerTests.swift */; };
 		2A0000000000000000000003 /* ScrollSmootherTests.swift */ = {isa = PBXBuildFile; fileRef = 2A0000000000000000000004 /* ScrollSmootherTests.swift */; };
-		/* End PBXBuildFile section */
+		2A0000000000000000000020 /* LicenseManagerTests.swift */ = {isa = PBXBuildFile; fileRef = 2A0000000000000000000021 /* LicenseManagerTests.swift */; };
+/* End PBXBuildFile section */
 
-		/* Begin PBXContainerItemProxy section */
+/* Begin PBXContainerItemProxy section */
 		2A0000000000000000000010 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 1A000000000000000000001B /* Project object */;
@@ -25,9 +29,9 @@
 			remoteGlobalIDString = 1A0000000000000000000017;
 			remoteInfo = Flowly;
 		};
-		/* End PBXContainerItemProxy section */
+/* End PBXContainerItemProxy section */
 
-		/* Begin PBXFileReference section */
+/* Begin PBXFileReference section */
 		1A0000000000000000000010 /* Flowly.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Flowly.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A0000000000000000000002 /* FlowlyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowlyApp.swift; sourceTree = "<group>"; };
 		1A0000000000000000000004 /* ScrollEventTap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollEventTap.swift; sourceTree = "<group>"; };
@@ -36,12 +40,16 @@
 		1A000000000000000000000A /* MenuBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarView.swift; sourceTree = "<group>"; };
 		1A000000000000000000000C /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		1A000000000000000000000E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1A0000000000000000000101 /* LicenseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseManager.swift; sourceTree = "<group>"; };
+		1A0000000000000000000103 /* LicenseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseView.swift; sourceTree = "<group>"; };
+		1A0000000000000000000105 /* TrialExpiredOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrialExpiredOverlay.swift; sourceTree = "<group>"; };
 		2A0000000000000000000002 /* SettingsManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsManagerTests.swift; sourceTree = "<group>"; };
 		2A0000000000000000000004 /* ScrollSmootherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollSmootherTests.swift; sourceTree = "<group>"; };
 		2A0000000000000000000005 /* FlowlyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FlowlyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		/* End PBXFileReference section */
+		2A0000000000000000000021 /* LicenseManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseManagerTests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
 
-		/* Begin PBXFrameworksBuildPhase section */
+/* Begin PBXFrameworksBuildPhase section */
 		1A0000000000000000000011 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -56,9 +64,9 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		/* End PBXFrameworksBuildPhase section */
+/* End PBXFrameworksBuildPhase section */
 
-		/* Begin PBXGroup section */
+/* Begin PBXGroup section */
 		1A0000000000000000000012 = {
 			isa = PBXGroup;
 			children = (
@@ -85,6 +93,7 @@
 				1A0000000000000000000004 /* ScrollEventTap.swift */,
 				1A0000000000000000000006 /* ScrollSmoother.swift */,
 				1A0000000000000000000008 /* SettingsManager.swift */,
+				1A0000000000000000000101 /* LicenseManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -94,6 +103,8 @@
 			children = (
 				1A000000000000000000000A /* MenuBarView.swift */,
 				1A000000000000000000000C /* SettingsView.swift */,
+				1A0000000000000000000103 /* LicenseView.swift */,
+				1A0000000000000000000105 /* TrialExpiredOverlay.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -112,13 +123,14 @@
 			children = (
 				2A0000000000000000000002 /* SettingsManagerTests.swift */,
 				2A0000000000000000000004 /* ScrollSmootherTests.swift */,
+				2A0000000000000000000021 /* LicenseManagerTests.swift */,
 			);
 			path = FlowlyTests;
 			sourceTree = "<group>";
 		};
-		/* End PBXGroup section */
+/* End PBXGroup section */
 
-		/* Begin PBXNativeTarget section */
+/* Begin PBXNativeTarget section */
 		1A0000000000000000000017 /* Flowly */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1A0000000000000000000018 /* Build configuration list for PBXNativeTarget "Flowly" */;
@@ -153,9 +165,9 @@
 			productReference = 2A0000000000000000000005 /* FlowlyTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		/* End PBXNativeTarget section */
+/* End PBXNativeTarget section */
 
-		/* Begin PBXProject section */
+/* Begin PBXProject section */
 		1A000000000000000000001B /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
@@ -180,9 +192,9 @@
 				2A0000000000000000000007 /* FlowlyTests */,
 			);
 		};
-		/* End PBXProject section */
+/* End PBXProject section */
 
-		/* Begin PBXResourcesBuildPhase section */
+/* Begin PBXResourcesBuildPhase section */
 		1A000000000000000000001A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -190,9 +202,9 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		/* End PBXResourcesBuildPhase section */
+/* End PBXResourcesBuildPhase section */
 
-		/* Begin PBXSourcesBuildPhase section */
+/* Begin PBXSourcesBuildPhase section */
 		1A0000000000000000000019 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -201,8 +213,11 @@
 				1A0000000000000000000003 /* ScrollEventTap.swift */,
 				1A0000000000000000000005 /* ScrollSmoother.swift */,
 				1A0000000000000000000007 /* SettingsManager.swift */,
+				1A0000000000000000000100 /* LicenseManager.swift */,
 				1A0000000000000000000009 /* MenuBarView.swift */,
 				1A000000000000000000000B /* SettingsView.swift */,
+				1A0000000000000000000102 /* LicenseView.swift */,
+				1A0000000000000000000104 /* TrialExpiredOverlay.swift */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -212,20 +227,21 @@
 			files = (
 				2A0000000000000000000001 /* SettingsManagerTests.swift */,
 				2A0000000000000000000003 /* ScrollSmootherTests.swift */,
+				2A0000000000000000000020 /* LicenseManagerTests.swift */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		/* End PBXSourcesBuildPhase section */
+/* End PBXSourcesBuildPhase section */
 
-		/* Begin PBXTargetDependency section */
+/* Begin PBXTargetDependency section */
 		2A000000000000000000000F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 1A0000000000000000000017 /* Flowly */;
 			targetProxy = 2A0000000000000000000010 /* PBXContainerItemProxy */;
 		};
-		/* End PBXTargetDependency section */
+/* End PBXTargetDependency section */
 
-		/* Begin XCBuildConfiguration section */
+/* Begin XCBuildConfiguration section */
 		1A000000000000000000001D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -438,9 +454,9 @@
 			};
 			name = Release;
 		};
-		/* End XCBuildConfiguration section */
+/* End XCBuildConfiguration section */
 
-		/* Begin XCConfigurationList section */
+/* Begin XCConfigurationList section */
 		1A0000000000000000000018 /* Build configuration list for PBXNativeTarget "Flowly" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -468,7 +484,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		/* End XCConfigurationList section */
+/* End XCConfigurationList section */
 	};
 	rootObject = 1A000000000000000000001B /* Project object */;
 }

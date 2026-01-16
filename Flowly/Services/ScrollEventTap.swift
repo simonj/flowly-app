@@ -14,11 +14,13 @@ class ScrollEventTap {
     private var runLoopSource: CFRunLoopSource?
     private let smoother: ScrollSmoother
     private let settingsManager: SettingsManager
+    private let licenseManager: LicenseManager
     private var isEnabled = false
 
-    init(smoother: ScrollSmoother = ScrollSmoother(), settingsManager: SettingsManager = .shared) {
+    init(smoother: ScrollSmoother = ScrollSmoother(), settingsManager: SettingsManager = .shared, licenseManager: LicenseManager = .shared) {
         self.smoother = smoother
         self.settingsManager = settingsManager
+        self.licenseManager = licenseManager
     }
 
     func start() -> Bool {
@@ -82,6 +84,11 @@ class ScrollEventTap {
 
     private func handleEvent(proxy: CGEventTapProxy, type: CGEventType, event: CGEvent) -> Unmanaged<CGEvent>? {
         guard type == .scrollWheel else {
+            return Unmanaged.passUnretained(event)
+        }
+
+        // Check license - pass through unmodified if not enabled
+        guard licenseManager.isFeatureEnabled else {
             return Unmanaged.passUnretained(event)
         }
 

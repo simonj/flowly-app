@@ -83,33 +83,25 @@ struct MenuBarView: View {
         return eventTap.hasAccessibilityPermission ? "Active" : "Permission Required"
     }
 
+    private func badgeView(text: String, color: Color) -> some View {
+        Text(text)
+            .font(.caption2)
+            .padding(.horizontal, 6)
+            .padding(.vertical, 2)
+            .background(color.opacity(0.2))
+            .foregroundColor(color)
+            .cornerRadius(4)
+    }
+
     @ViewBuilder
     private var licenseStatusBadge: some View {
         switch licenseManager.status {
         case .trial(let daysRemaining):
-            Text("\(daysRemaining)d trial")
-                .font(.caption2)
-                .padding(.horizontal, 6)
-                .padding(.vertical, 2)
-                .background(Color.orange.opacity(0.2))
-                .foregroundColor(.orange)
-                .cornerRadius(4)
+            badgeView(text: "\(daysRemaining)d trial", color: .orange)
         case .licensed:
-            Text("Licensed")
-                .font(.caption2)
-                .padding(.horizontal, 6)
-                .padding(.vertical, 2)
-                .background(Color.green.opacity(0.2))
-                .foregroundColor(.green)
-                .cornerRadius(4)
+            badgeView(text: "Licensed", color: .green)
         case .expired:
-            Text("Expired")
-                .font(.caption2)
-                .padding(.horizontal, 6)
-                .padding(.vertical, 2)
-                .background(Color.red.opacity(0.2))
-                .foregroundColor(.red)
-                .cornerRadius(4)
+            badgeView(text: "Expired", color: .red)
         case .validating:
             EmptyView()
         }

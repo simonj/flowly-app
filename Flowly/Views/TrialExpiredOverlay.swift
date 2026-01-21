@@ -9,8 +9,6 @@ import SwiftUI
 
 struct TrialExpiredOverlay: View {
     @ObservedObject var licenseManager = LicenseManager.shared
-    @State private var emailInput: String = ""
-    @State private var isActivating: Bool = false
 
     var body: some View {
         ZStack {
@@ -52,44 +50,17 @@ struct TrialExpiredOverlay: View {
                         .font(.subheadline)
                         .foregroundColor(.secondary)
 
-                    HStack {
-                        TextField("Enter your email", text: $emailInput)
-                            .textFieldStyle(.roundedBorder)
-                            .frame(width: 200)
-                            .disabled(isActivating)
-
-                        Button(action: activateLicense) {
-                            if isActivating {
-                                ProgressView()
-                                    .scaleEffect(0.7)
-                            } else {
-                                Text("Activate")
-                            }
-                        }
-                        .buttonStyle(.bordered)
-                        .disabled(emailInput.isEmpty || isActivating)
-                    }
-
-                    if let error = licenseManager.validationError {
-                        Text(error)
-                            .font(.caption)
-                            .foregroundColor(.red)
-                    }
+                    LicenseActivationForm(
+                        licenseManager: licenseManager,
+                        textFieldWidth: 200,
+                        showPurchaseButton: false
+                    )
                 }
             }
             .padding(40)
             .background(Color(.windowBackgroundColor))
             .cornerRadius(16)
             .shadow(radius: 20)
-        }
-    }
-
-    private func activateLicense() {
-        isActivating = true
-        licenseManager.activateLicense(email: emailInput)
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-            isActivating = false
         }
     }
 }

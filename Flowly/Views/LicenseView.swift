@@ -9,8 +9,6 @@ import SwiftUI
 
 struct LicenseView: View {
     @ObservedObject var licenseManager = LicenseManager.shared
-    @State private var emailInput: String = ""
-    @State private var isActivating: Bool = false
 
     var body: some View {
         VStack(spacing: 20) {
@@ -136,45 +134,18 @@ struct LicenseView: View {
 
     private var activationSection: some View {
         VStack(spacing: 16) {
-            // Email input
             VStack(alignment: .leading, spacing: 6) {
                 Text("Enter License Email")
                     .font(.headline)
 
-                HStack {
-                    TextField("email@example.com", text: $emailInput)
-                        .textFieldStyle(.roundedBorder)
-                        .disabled(isActivating)
-
-                    Button(action: activateLicense) {
-                        if isActivating {
-                            ProgressView()
-                                .scaleEffect(0.7)
-                        } else {
-                            Text("Activate")
-                        }
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .disabled(emailInput.isEmpty || isActivating)
-                }
-
-                if let error = licenseManager.validationError {
-                    Text(error)
-                        .font(.caption)
-                        .foregroundColor(.red)
-                }
+                LicenseActivationForm(
+                    licenseManager: licenseManager,
+                    buttonStyle: .borderedProminent
+                )
             }
             .padding()
             .background(Color(.controlBackgroundColor))
             .cornerRadius(8)
-
-            // Purchase button
-            Button(action: { licenseManager.openPurchasePage() }) {
-                Label("Purchase License", systemImage: "cart.fill")
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(.bordered)
-            .controlSize(.large)
         }
     }
 
@@ -193,17 +164,5 @@ struct LicenseView: View {
         .padding()
         .background(Color(.controlBackgroundColor))
         .cornerRadius(8)
-    }
-
-    // MARK: - Actions
-
-    private func activateLicense() {
-        isActivating = true
-        licenseManager.activateLicense(email: emailInput)
-
-        // Reset activating state after a delay (validation is async)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-            isActivating = false
-        }
     }
 }

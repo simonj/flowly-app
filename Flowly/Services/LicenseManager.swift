@@ -82,6 +82,11 @@ class LicenseManager: ObservableObject {
         return max(0, trialDays - daysSinceStart)
     }
 
+    private var trialStatus: LicenseStatus {
+        let daysRemaining = calculateTrialDaysRemaining()
+        return daysRemaining > 0 ? .trial(daysRemaining: daysRemaining) : .expired
+    }
+
     // MARK: - License Storage
 
     private var activatedEmail: String? {
@@ -109,7 +114,6 @@ class LicenseManager: ObservableObject {
 
     func refreshStatus() {
         if let email = activatedEmail {
-            // Has activated email, check cache or validate online
             if isCacheValid && lastValidationResult {
                 status = .licensed(email: email)
             } else {
@@ -117,9 +121,7 @@ class LicenseManager: ObservableObject {
                 validateLicense(email: email)
             }
         } else {
-            // Trial mode
-            let daysRemaining = calculateTrialDaysRemaining()
-            status = daysRemaining > 0 ? .trial(daysRemaining: daysRemaining) : .expired
+            status = trialStatus
         }
     }
 
@@ -232,13 +234,8 @@ class LicenseManager: ObservableObject {
     private func restorePreValidationStatus() {
         if let email = activatedEmail, isCacheValid, lastValidationResult {
             status = .licensed(email: email)
-        } else if activatedEmail != nil {
-            // Had a license but it's no longer valid
-            let daysRemaining = calculateTrialDaysRemaining()
-            status = daysRemaining > 0 ? .trial(daysRemaining: daysRemaining) : .expired
         } else {
-            let daysRemaining = calculateTrialDaysRemaining()
-            status = daysRemaining > 0 ? .trial(daysRemaining: daysRemaining) : .expired
+            status = trialStatus
         }
     }
 

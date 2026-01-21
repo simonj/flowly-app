@@ -105,33 +105,25 @@ class SettingsManager: ObservableObject {
 
     // MARK: - Initialization
 
+    private static func loadDouble(from defaults: UserDefaults, key: String, defaultValue: Double) -> Double {
+        defaults.object(forKey: key) != nil ? defaults.double(forKey: key) : defaultValue
+    }
+
+    private static func loadBool(from defaults: UserDefaults, key: String, defaultValue: Bool) -> Bool {
+        defaults.object(forKey: key) != nil ? defaults.bool(forKey: key) : defaultValue
+    }
+
     private init() {
-        // Load saved values or use defaults
-        self.stepSize = defaults.object(forKey: Keys.stepSize) != nil
-            ? defaults.double(forKey: Keys.stepSize) : 90.0
-
-        self.animationTime = defaults.object(forKey: Keys.animationTime) != nil
-            ? defaults.double(forKey: Keys.animationTime) : 360.0
-
-        self.accelerationDelta = defaults.object(forKey: Keys.accelerationDelta) != nil
-            ? defaults.double(forKey: Keys.accelerationDelta) : 70.0
-
-        self.accelerationScale = defaults.object(forKey: Keys.accelerationScale) != nil
-            ? defaults.double(forKey: Keys.accelerationScale) : 7.0
-
-        self.pulseScale = defaults.object(forKey: Keys.pulseScale) != nil
-            ? defaults.double(forKey: Keys.pulseScale) : 4.0
-
-        self.autoStartOnLogin = defaults.bool(forKey: Keys.autoStartOnLogin)
-
-        self.animationEasingEnabled = defaults.object(forKey: Keys.animationEasingEnabled) != nil
-            ? defaults.bool(forKey: Keys.animationEasingEnabled) : true
-
-        self.standardWheelDirection = defaults.object(forKey: Keys.standardWheelDirection) != nil
-            ? defaults.bool(forKey: Keys.standardWheelDirection) : true
-
-        self.horizontalScrollingEnabled = defaults.object(forKey: Keys.horizontalScrollingEnabled) != nil
-            ? defaults.bool(forKey: Keys.horizontalScrollingEnabled) : true
+        let d = defaults
+        self.stepSize = Self.loadDouble(from: d, key: Keys.stepSize, defaultValue: 90.0)
+        self.animationTime = Self.loadDouble(from: d, key: Keys.animationTime, defaultValue: 360.0)
+        self.accelerationDelta = Self.loadDouble(from: d, key: Keys.accelerationDelta, defaultValue: 70.0)
+        self.accelerationScale = Self.loadDouble(from: d, key: Keys.accelerationScale, defaultValue: 7.0)
+        self.pulseScale = Self.loadDouble(from: d, key: Keys.pulseScale, defaultValue: 4.0)
+        self.autoStartOnLogin = d.bool(forKey: Keys.autoStartOnLogin)
+        self.animationEasingEnabled = Self.loadBool(from: d, key: Keys.animationEasingEnabled, defaultValue: true)
+        self.standardWheelDirection = Self.loadBool(from: d, key: Keys.standardWheelDirection, defaultValue: true)
+        self.horizontalScrollingEnabled = Self.loadBool(from: d, key: Keys.horizontalScrollingEnabled, defaultValue: true)
     }
 
     // MARK: - Methods

@@ -16,6 +16,7 @@
 		1A0000000000000000000100 /* LicenseManager.swift */ = {isa = PBXBuildFile; fileRef = 1A0000000000000000000101 /* LicenseManager.swift */; };
 		1A0000000000000000000102 /* LicenseView.swift */ = {isa = PBXBuildFile; fileRef = 1A0000000000000000000103 /* LicenseView.swift */; };
 		1A0000000000000000000104 /* TrialExpiredOverlay.swift */ = {isa = PBXBuildFile; fileRef = 1A0000000000000000000105 /* TrialExpiredOverlay.swift */; };
+		1A0000000000000000000106 /* LicenseActivationForm.swift */ = {isa = PBXBuildFile; fileRef = 1A0000000000000000000107 /* LicenseActivationForm.swift */; };
 		2A0000000000000000000001 /* SettingsManagerTests.swift */ = {isa = PBXBuildFile; fileRef = 2A0000000000000000000002 /* SettingsManagerTests.swift */; };
 		2A0000000000000000000003 /* ScrollSmootherTests.swift */ = {isa = PBXBuildFile; fileRef = 2A0000000000000000000004 /* ScrollSmootherTests.swift */; };
 		2A0000000000000000000020 /* LicenseManagerTests.swift */ = {isa = PBXBuildFile; fileRef = 2A0000000000000000000021 /* LicenseManagerTests.swift */; };
@@ -43,6 +44,7 @@
 		1A0000000000000000000101 /* LicenseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseManager.swift; sourceTree = "<group>"; };
 		1A0000000000000000000103 /* LicenseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseView.swift; sourceTree = "<group>"; };
 		1A0000000000000000000105 /* TrialExpiredOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrialExpiredOverlay.swift; sourceTree = "<group>"; };
+		1A0000000000000000000107 /* LicenseActivationForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseActivationForm.swift; sourceTree = "<group>"; };
 		2A0000000000000000000002 /* SettingsManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsManagerTests.swift; sourceTree = "<group>"; };
 		2A0000000000000000000004 /* ScrollSmootherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollSmootherTests.swift; sourceTree = "<group>"; };
 		2A0000000000000000000005 /* FlowlyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FlowlyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -105,6 +107,7 @@
 				1A000000000000000000000C /* SettingsView.swift */,
 				1A0000000000000000000103 /* LicenseView.swift */,
 				1A0000000000000000000105 /* TrialExpiredOverlay.swift */,
+				1A0000000000000000000107 /* LicenseActivationForm.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -218,6 +221,7 @@
 				1A000000000000000000000B /* SettingsView.swift */,
 				1A0000000000000000000102 /* LicenseView.swift */,
 				1A0000000000000000000104 /* TrialExpiredOverlay.swift */,
+				1A0000000000000000000106 /* LicenseActivationForm.swift */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

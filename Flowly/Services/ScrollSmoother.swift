@@ -12,6 +12,9 @@ class ScrollSmoother {
     private let settingsManager: SettingsManager
     private let queue = DispatchQueue(label: "com.flowly.smoother", qos: .userInteractive)
 
+    // Marker to identify synthetic events so they don't get re-intercepted
+    private static let syntheticEventMarker: Int64 = 0x534D4F4F54480000 // "SMOOTH" in hex
+
     // Animation state
     private var animationTimer: DispatchSourceTimer?
     private var targetDeltaY: Double = 0
@@ -130,34 +133,16 @@ class ScrollSmoother {
         remainderY = rawDeltaY - pixelDeltaY
         remainderX = rawDeltaX - pixelDeltaX
 
-        // Clamp to Int32 range to prevent overflow (scroll deltas shouldn't be huge anyway)
-        let maxDelta = Double(Int32.max - 1)
-        let minDelta = Double(Int32.min + 1)
-        let clampedDeltaY = max(minDelta, min(maxDelta, pixelDeltaY))
-        let clampedDeltaX = max(minDelta, min(maxDelta, pixelDeltaX))
-
-        // Post scroll event if there's movement
-        if clampedDeltaY != 0 || clampedDeltaX != 0 {
-            if let event = CGEvent(
-                scrollWheelEvent2Source: nil,
-                units: .pixel,
-                wheelCount: 2,
-                wheel1: Int32(clampedDeltaY),
-                wheel2: Int32(clampedDeltaX),
-                wheel3: 0
-            ) {
-                // Mark as our synthetic event so it doesn't get re-intercepted
-                event.setIntegerValueField(.eventSourceUserData, value: 0x534D4F4F54480000)
-                event.post(tap: .cghidEventTap)
-            }
-        }
+        // Clamp and post scroll event
+        let clampedDeltaY = clampToInt32Range(pixelDeltaY)
+        let clampedDeltaX = clampToInt32Range(pixelDeltaX)
+        postScrollEvent(deltaY: clampedDeltaY, deltaX: clampedDeltaX)
 
         currentProgress = newProgress
 
         // End animation when complete
         if currentProgress >= 1.0 {
             stopAnimationTimer()
-            // Flush any remaining fractional pixels
             flushRemainder()
         }
     }
@@ -176,30 +161,9 @@ class ScrollSmoother {
     }
 
     private func flushRemainder() {
-        let pixelDeltaY = round(remainderY)
-        let pixelDeltaX = round(remainderX)
-
-        // Clamp to Int32 range
-        let maxDelta = Double(Int32.max - 1)
-        let minDelta = Double(Int32.min + 1)
-        let clampedDeltaY = max(minDelta, min(maxDelta, pixelDeltaY))
-        let clampedDeltaX = max(minDelta, min(maxDelta, pixelDeltaX))
-
-        if clampedDeltaY != 0 || clampedDeltaX != 0 {
-            if let event = CGEvent(
-                scrollWheelEvent2Source: nil,
-                units: .pixel,
-                wheelCount: 2,
-                wheel1: Int32(clampedDeltaY),
-                wheel2: Int32(clampedDeltaX),
-                wheel3: 0
-            ) {
-                // Mark as our synthetic event so it doesn't get re-intercepted
-                event.setIntegerValueField(.eventSourceUserData, value: 0x534D4F4F54480000)
-                event.post(tap: .cghidEventTap)
-            }
-        }
-
+        let clampedDeltaY = clampToInt32Range(round(remainderY))
+        let clampedDeltaX = clampToInt32Range(round(remainderX))
+        postScrollEvent(deltaY: clampedDeltaY, deltaX: clampedDeltaX)
         remainderY = 0
         remainderX = 0
     }
@@ -207,6 +171,30 @@ class ScrollSmoother {
     private func stopAnimationTimer() {
         animationTimer?.cancel()
         animationTimer = nil
+    }
+
+    // MARK: - Helpers
+
+    private func clampToInt32Range(_ value: Double) -> Double {
+        let maxDelta = Double(Int32.max - 1)
+        let minDelta = Double(Int32.min + 1)
+        return max(minDelta, min(maxDelta, value))
+    }
+
+    private func postScrollEvent(deltaY: Double, deltaX: Double) {
+        guard deltaY != 0 || deltaX != 0 else { return }
+
+        guard let event = CGEvent(
+            scrollWheelEvent2Source: nil,
+            units: .pixel,
+            wheelCount: 2,
+            wheel1: Int32(deltaY),
+            wheel2: Int32(deltaX),
+            wheel3: 0
+        ) else { return }
+
+        event.setIntegerValueField(.eventSourceUserData, value: Self.syntheticEventMarker)
+        event.post(tap: .cghidEventTap)
     }
 
     func cancelAnimations() {

@@ -269,7 +269,7 @@ class ScrollEventTapObservable: ObservableObject {
         eventTap.requestAccessibilityPermission()
     }
 
-    func updatePermissionStatus() {
+    private func updatePermissionStatus() {
         hasPermission = eventTap.hasAccessibilityPermission
     }
 

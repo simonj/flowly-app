@@ -121,7 +121,7 @@ class ScrollEventTap {
     }
 
     var hasAccessibilityPermission: Bool {
-        return AXIsProcessTrusted()
+        AXIsProcessTrusted()
     }
 
     func requestAccessibilityPermission() {

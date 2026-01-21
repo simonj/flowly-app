@@ -1,19 +1,19 @@
 #!/bin/bash
 
-# Build and run SmoothScroll app
+# Build and run Flowly app
 
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$PROJECT_DIR"
 
-echo "Building SmoothScroll..."
-xcodebuild -project SmoothScroll.xcodeproj \
-           -scheme SmoothScroll \
+echo "Building Flowly..."
+xcodebuild -project Flowly.xcodeproj \
+           -scheme Flowly \
            -configuration Release \
            clean build \
            > /dev/null 2>&1
 
 if [ $? -eq 0 ]; then
-    APP_PATH=$(find ~/Library/Developer/Xcode/DerivedData/SmoothScroll-*/Build/Products/Release/SmoothScroll.app -maxdepth 0 2>/dev/null | head -1)
+    APP_PATH=$(find ~/Library/Developer/Xcode/DerivedData/Flowly-*/Build/Products/Release/Flowly.app -maxdepth 0 2>/dev/null | head -1)
     
     if [ -n "$APP_PATH" ]; then
         echo "✓ Build successful!"

@@ -26,7 +26,7 @@ struct FlowlyApp: App {
     }
 
     var body: some Scene {
-        MenuBarExtra("Flowly", systemImage: "arrow.up.and.down.text.horizontal") {
+        MenuBarExtra("Flowly", image: "MenuBarIcon") {
             MenuBarView(eventTap: eventTapObservable.eventTap)
                 .environmentObject(licenseManager)
         }

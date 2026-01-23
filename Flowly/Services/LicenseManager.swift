@@ -32,8 +32,8 @@ class LicenseManager: ObservableObject {
     }
 
     // API configuration
-    private let validationURL = URL(string: "https://yoursite.com/api/flowly/validate")!
-    static let purchaseURL = URL(string: "https://yoursite.com/flowly/purchase")!
+    private let validationURL = URL(string: "https://flowlyapp.dev/api/license/validate")!
+    static let purchaseURL = URL(string: "https://flowlyapp.dev/pricing")!
 
     // MARK: - Published Properties
 

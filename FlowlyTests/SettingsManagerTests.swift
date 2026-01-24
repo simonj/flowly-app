@@ -24,14 +24,16 @@ final class SettingsManagerTests: XCTestCase {
     func testDefaultValues() {
         settings.resetToDefaults()
 
-        XCTAssertEqual(settings.stepSize, 90.0, "Default stepSize should be 90")
-        XCTAssertEqual(settings.animationTime, 360.0, "Default animationTime should be 360")
-        XCTAssertEqual(settings.accelerationDelta, 70.0, "Default accelerationDelta should be 70")
-        XCTAssertEqual(settings.accelerationScale, 7.0, "Default accelerationScale should be 7")
-        XCTAssertEqual(settings.pulseScale, 4.0, "Default pulseScale should be 4")
+        // Defaults use the Balanced preset
+        XCTAssertEqual(settings.stepSize, 90.0, "Default stepSize should be 90 (Balanced)")
+        XCTAssertEqual(settings.animationTime, 300.0, "Default animationTime should be 300 (Balanced)")
+        XCTAssertEqual(settings.accelerationDelta, 70.0, "Default accelerationDelta should be 70 (Balanced)")
+        XCTAssertEqual(settings.accelerationScale, 5.0, "Default accelerationScale should be 5 (Balanced)")
+        XCTAssertEqual(settings.pulseScale, 3.0, "Default pulseScale should be 3 (Balanced)")
         XCTAssertTrue(settings.animationEasingEnabled, "Default animationEasingEnabled should be true")
         XCTAssertTrue(settings.standardWheelDirection, "Default standardWheelDirection should be true")
         XCTAssertTrue(settings.horizontalScrollingEnabled, "Default horizontalScrollingEnabled should be true")
+        XCTAssertEqual(settings.selectedPreset, .balanced, "Default preset should be Balanced")
     }
 
     // MARK: - Bounds Clamping Tests
@@ -80,15 +82,16 @@ final class SettingsManagerTests: XCTestCase {
         // Reset
         settings.resetToDefaults()
 
-        // Verify all defaults restored
+        // Verify all defaults restored (Balanced preset values)
         XCTAssertEqual(settings.stepSize, 90.0)
-        XCTAssertEqual(settings.animationTime, 360.0)
+        XCTAssertEqual(settings.animationTime, 300.0)
         XCTAssertEqual(settings.accelerationDelta, 70.0)
-        XCTAssertEqual(settings.accelerationScale, 7.0)
-        XCTAssertEqual(settings.pulseScale, 4.0)
+        XCTAssertEqual(settings.accelerationScale, 5.0)
+        XCTAssertEqual(settings.pulseScale, 3.0)
         XCTAssertTrue(settings.animationEasingEnabled)
         XCTAssertTrue(settings.standardWheelDirection)
         XCTAssertTrue(settings.horizontalScrollingEnabled)
+        XCTAssertEqual(settings.selectedPreset, .balanced)
     }
 
     // MARK: - Boolean Toggle Tests

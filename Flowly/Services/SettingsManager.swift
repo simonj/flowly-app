@@ -9,6 +9,22 @@ import Foundation
 import Combine
 import ServiceManagement
 
+enum ScrollPreset: String, CaseIterable {
+    case minimal = "Minimal"
+    case responsive = "Responsive"
+    case balanced = "Balanced"
+    case smooth = "Smooth"
+
+    var description: String {
+        switch self {
+        case .minimal: return "Nearly native"
+        case .responsive: return "Fast & precise"
+        case .balanced: return "Recommended"
+        case .smooth: return "Soft & fluid"
+        }
+    }
+}
+
 class SettingsManager: ObservableObject {
     static let shared = SettingsManager()
 
@@ -25,6 +41,7 @@ class SettingsManager: ObservableObject {
         static let animationEasingEnabled = "animationEasingEnabled"
         static let standardWheelDirection = "standardWheelDirection"
         static let horizontalScrollingEnabled = "horizontalScrollingEnabled"
+        static let selectedPreset = "selectedPreset"
     }
 
     // MARK: - Settings Properties
@@ -103,6 +120,13 @@ class SettingsManager: ObservableObject {
         }
     }
 
+    /// Selected preset (default: balanced)
+    @Published var selectedPreset: ScrollPreset {
+        didSet {
+            defaults.set(selectedPreset.rawValue, forKey: Keys.selectedPreset)
+        }
+    }
+
     // MARK: - Initialization
 
     private static func loadDouble(from defaults: UserDefaults, key: String, defaultValue: Double) -> Double {
@@ -116,28 +140,62 @@ class SettingsManager: ObservableObject {
     private init() {
         let d = defaults
         self.stepSize = Self.loadDouble(from: d, key: Keys.stepSize, defaultValue: 90.0)
-        self.animationTime = Self.loadDouble(from: d, key: Keys.animationTime, defaultValue: 360.0)
+        self.animationTime = Self.loadDouble(from: d, key: Keys.animationTime, defaultValue: 300.0)
         self.accelerationDelta = Self.loadDouble(from: d, key: Keys.accelerationDelta, defaultValue: 70.0)
-        self.accelerationScale = Self.loadDouble(from: d, key: Keys.accelerationScale, defaultValue: 7.0)
-        self.pulseScale = Self.loadDouble(from: d, key: Keys.pulseScale, defaultValue: 4.0)
+        self.accelerationScale = Self.loadDouble(from: d, key: Keys.accelerationScale, defaultValue: 5.0)
+        self.pulseScale = Self.loadDouble(from: d, key: Keys.pulseScale, defaultValue: 3.0)
         self.autoStartOnLogin = d.bool(forKey: Keys.autoStartOnLogin)
         self.animationEasingEnabled = Self.loadBool(from: d, key: Keys.animationEasingEnabled, defaultValue: true)
         self.standardWheelDirection = Self.loadBool(from: d, key: Keys.standardWheelDirection, defaultValue: true)
         self.horizontalScrollingEnabled = Self.loadBool(from: d, key: Keys.horizontalScrollingEnabled, defaultValue: true)
+
+        // Load preset
+        if let presetString = d.string(forKey: Keys.selectedPreset),
+           let preset = ScrollPreset(rawValue: presetString) {
+            self.selectedPreset = preset
+        } else {
+            self.selectedPreset = .balanced
+        }
     }
 
     // MARK: - Methods
 
     func resetToDefaults() {
-        stepSize = 90.0
-        animationTime = 360.0
-        accelerationDelta = 70.0
-        accelerationScale = 7.0
-        pulseScale = 4.0
+        applyPreset(.balanced)
         autoStartOnLogin = false
         animationEasingEnabled = true
         standardWheelDirection = true
         horizontalScrollingEnabled = true
+    }
+
+    func applyPreset(_ preset: ScrollPreset) {
+        switch preset {
+        case .minimal:
+            stepSize = 40
+            animationTime = 80
+            accelerationDelta = 30
+            accelerationScale = 1
+            pulseScale = 1
+        case .responsive:
+            stepSize = 70
+            animationTime = 200
+            accelerationDelta = 50
+            accelerationScale = 4
+            pulseScale = 2
+        case .balanced:
+            stepSize = 90
+            animationTime = 300
+            accelerationDelta = 70
+            accelerationScale = 5
+            pulseScale = 3
+        case .smooth:
+            stepSize = 110
+            animationTime = 400
+            accelerationDelta = 90
+            accelerationScale = 7
+            pulseScale = 4
+        }
+        selectedPreset = preset
     }
 
     private func updateLoginItem() {

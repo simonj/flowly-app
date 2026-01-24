@@ -11,6 +11,7 @@ struct SettingsView: View {
     @ObservedObject var settingsManager = SettingsManager.shared
     @EnvironmentObject var licenseManager: LicenseManager
     @ObservedObject var eventTap: ScrollEventTapObservable
+    @State private var showAdvanced = false
 
     var body: some View {
         ZStack {
@@ -47,13 +48,13 @@ struct SettingsView: View {
 
                 Divider()
 
-                // Scroll Settings
-                scrollSettingsSection
+                // Scroll Smoothness Presets
+                presetSection
 
                 Divider()
 
-                // Acceleration Settings
-                accelerationSettingsSection
+                // Advanced Settings (collapsible)
+                advancedSection
 
                 Divider()
 
@@ -121,65 +122,84 @@ struct SettingsView: View {
         .cornerRadius(8)
     }
 
-    private var scrollSettingsSection: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text("Scroll Settings")
+    private var presetSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Scroll Smoothness")
                 .font(.headline)
 
-            // Step Size
-            settingRow(
-                title: "Step size",
-                value: "\(Int(settingsManager.stepSize)) px",
-                binding: $settingsManager.stepSize,
-                range: 10...300,
-                step: 5
-            )
-
-            // Animation Time
-            settingRow(
-                title: "Animation time",
-                value: "\(Int(settingsManager.animationTime)) ms",
-                binding: $settingsManager.animationTime,
-                range: 50...1000,
-                step: 10
-            )
+            Picker("Preset", selection: $settingsManager.selectedPreset) {
+                ForEach(ScrollPreset.allCases, id: \.self) { preset in
+                    HStack {
+                        Text(preset.rawValue)
+                        Text("– \(preset.description)")
+                            .foregroundColor(.secondary)
+                    }
+                    .tag(preset)
+                }
+            }
+            .pickerStyle(.radioGroup)
+            .onChange(of: settingsManager.selectedPreset) { preset in
+                settingsManager.applyPreset(preset)
+            }
         }
         .padding()
         .background(Color(.controlBackgroundColor))
         .cornerRadius(8)
     }
 
-    private var accelerationSettingsSection: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text("Acceleration")
-                .font(.headline)
+    private var advancedSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            DisclosureGroup("Advanced Settings", isExpanded: $showAdvanced) {
+                VStack(alignment: .leading, spacing: 16) {
+                    // Step Size
+                    settingRow(
+                        title: "Step size",
+                        value: "\(Int(settingsManager.stepSize)) px",
+                        binding: $settingsManager.stepSize,
+                        range: 10...300,
+                        step: 5
+                    )
 
-            // Acceleration Delta
-            settingRow(
-                title: "Acceleration delta",
-                value: "\(Int(settingsManager.accelerationDelta)) ms",
-                binding: $settingsManager.accelerationDelta,
-                range: 10...200,
-                step: 5
-            )
+                    // Animation Time
+                    settingRow(
+                        title: "Animation time",
+                        value: "\(Int(settingsManager.animationTime)) ms",
+                        binding: $settingsManager.animationTime,
+                        range: 50...1000,
+                        step: 10
+                    )
 
-            // Acceleration Scale
-            settingRow(
-                title: "Acceleration scale",
-                value: "\(Int(settingsManager.accelerationScale))x",
-                binding: $settingsManager.accelerationScale,
-                range: 1...20,
-                step: 1
-            )
+                    Divider()
 
-            // Pulse Scale
-            settingRow(
-                title: "Pulse scale",
-                value: "\(Int(settingsManager.pulseScale))x",
-                binding: $settingsManager.pulseScale,
-                range: 1...10,
-                step: 1
-            )
+                    // Acceleration Delta
+                    settingRow(
+                        title: "Acceleration delta",
+                        value: "\(Int(settingsManager.accelerationDelta)) ms",
+                        binding: $settingsManager.accelerationDelta,
+                        range: 10...200,
+                        step: 5
+                    )
+
+                    // Acceleration Scale
+                    settingRow(
+                        title: "Acceleration scale",
+                        value: "\(Int(settingsManager.accelerationScale))x",
+                        binding: $settingsManager.accelerationScale,
+                        range: 1...20,
+                        step: 1
+                    )
+
+                    // Pulse Scale
+                    settingRow(
+                        title: "Easing intensity",
+                        value: "\(Int(settingsManager.pulseScale))x",
+                        binding: $settingsManager.pulseScale,
+                        range: 1...10,
+                        step: 1
+                    )
+                }
+                .padding(.top, 8)
+            }
         }
         .padding()
         .background(Color(.controlBackgroundColor))

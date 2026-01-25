@@ -7,6 +7,13 @@
 
 import SwiftUI
 
+// MARK: - Flowly Brand Colors
+extension Color {
+    static let flowlyLime = Color(red: 201/255, green: 226/255, blue: 101/255)  // #C9E265
+    static let flowlyPeach = Color(red: 248/255, green: 200/255, blue: 200/255) // #f8c8c8
+    static let flowlyDark = Color(red: 30/255, green: 45/255, blue: 61/255)     // #1e2d3d
+}
+
 struct SettingsView: View {
     @ObservedObject var settingsManager = SettingsManager.shared
     @EnvironmentObject var licenseManager: LicenseManager
@@ -26,7 +33,7 @@ struct SettingsView: View {
                         Label("License", systemImage: "key.fill")
                     }
             }
-            .frame(width: 450, height: 650)
+            .frame(width: 420, height: 420)
 
             // Show overlay when trial expired
             if case .expired = licenseManager.status {
@@ -36,74 +43,48 @@ struct SettingsView: View {
     }
 
     private var settingsTab: some View {
-        ScrollView {
-            VStack(spacing: 16) {
-                // Header
-                headerSection
+        VStack(spacing: 10) {
+            // Permission Status (compact)
+            permissionSection
 
-                Divider()
+            // Scroll Smoothness Presets
+            presetSection
 
-                // Permission Status
-                permissionSection
+            // Advanced Settings (collapsible)
+            advancedSection
 
-                Divider()
+            // Options (2x2 grid)
+            optionsSection
 
-                // Scroll Smoothness Presets
-                presetSection
+            Spacer(minLength: 0)
 
-                Divider()
-
-                // Advanced Settings (collapsible)
-                advancedSection
-
-                Divider()
-
-                // Options
-                optionsSection
-
-                Divider()
-
-                // Reset button
-                Button("Reset to Defaults") {
-                    settingsManager.resetToDefaults()
-                }
-                .buttonStyle(.bordered)
-                .padding(.vertical, 8)
+            // Reset button (subtle)
+            Button(action: { settingsManager.resetToDefaults() }) {
+                Text("Reset to Defaults")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
             }
-            .padding()
+            .buttonStyle(.plain)
+            .padding(.bottom, 6)
         }
+        .padding(12)
     }
 
     // MARK: - Sections
 
-    private var headerSection: some View {
-        VStack(spacing: 8) {
-            Image(systemName: "arrow.up.and.down.text.horizontal")
-                .font(.system(size: 40))
-                .foregroundColor(.blue)
-            Text("Flowly")
-                .font(.title2)
-                .fontWeight(.bold)
-            Text("Preferences")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-        }
-        .padding(.top, 8)
-    }
-
     private var permissionSection: some View {
-        HStack {
+        HStack(spacing: 10) {
             Image(systemName: eventTap.hasPermission ? "checkmark.circle.fill" : "exclamationmark.triangle.fill")
-                .foregroundColor(eventTap.hasPermission ? .green : .orange)
-                .font(.title3)
+                .foregroundColor(eventTap.hasPermission ? .flowlyLime : .orange)
+                .font(.system(size: 18))
 
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: 1) {
                 Text(eventTap.hasPermission ? "Active" : "Permission Required")
-                    .font(.headline)
+                    .font(.subheadline.weight(.semibold))
                 Text(eventTap.hasPermission
                      ? "Smooth scrolling is working"
                      : "Accessibility permission required")
-                    .font(.caption)
+                    .font(.caption2)
                     .foregroundColor(.secondary)
             }
 
@@ -114,82 +95,76 @@ struct SettingsView: View {
                     eventTap.requestPermission()
                 }
                 .buttonStyle(.borderedProminent)
+                .tint(.flowlyLime)
                 .controlSize(.small)
             }
         }
-        .padding()
-        .background(Color(.controlBackgroundColor))
+        .padding(10)
+        .background(Color(.controlBackgroundColor).opacity(0.6))
         .cornerRadius(8)
     }
 
     private var presetSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 8) {
             Text("Scroll Smoothness")
-                .font(.headline)
+                .font(.subheadline.weight(.semibold))
 
             Picker("Preset", selection: $settingsManager.selectedPreset) {
                 ForEach(ScrollPreset.allCases, id: \.self) { preset in
-                    HStack {
-                        Text(preset.rawValue)
-                        Text("– \(preset.description)")
-                            .foregroundColor(.secondary)
-                    }
-                    .tag(preset)
+                    Text("\(preset.rawValue) – \(preset.description)")
+                        .tag(preset)
                 }
             }
             .pickerStyle(.radioGroup)
+            .labelsHidden()
             .onChange(of: settingsManager.selectedPreset) { preset in
                 settingsManager.applyPreset(preset)
             }
         }
-        .padding()
-        .background(Color(.controlBackgroundColor))
+        .padding(10)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color(.controlBackgroundColor).opacity(0.6))
         .cornerRadius(8)
     }
 
     private var advancedSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 8) {
             DisclosureGroup("Advanced Settings", isExpanded: $showAdvanced) {
-                VStack(alignment: .leading, spacing: 16) {
-                    // Step Size
-                    settingRow(
-                        title: "Step size",
-                        value: "\(Int(settingsManager.stepSize)) px",
-                        binding: $settingsManager.stepSize,
-                        range: 10...300,
-                        step: 5
-                    )
+                VStack(spacing: 10) {
+                    HStack(spacing: 12) {
+                        settingRow(
+                            title: "Step size",
+                            value: "\(Int(settingsManager.stepSize)) px",
+                            binding: $settingsManager.stepSize,
+                            range: 10...300,
+                            step: 5
+                        )
+                        settingRow(
+                            title: "Animation time",
+                            value: "\(Int(settingsManager.animationTime)) ms",
+                            binding: $settingsManager.animationTime,
+                            range: 50...1000,
+                            step: 10
+                        )
+                    }
 
-                    // Animation Time
-                    settingRow(
-                        title: "Animation time",
-                        value: "\(Int(settingsManager.animationTime)) ms",
-                        binding: $settingsManager.animationTime,
-                        range: 50...1000,
-                        step: 10
-                    )
+                    HStack(spacing: 12) {
+                        settingRow(
+                            title: "Accel. delta",
+                            value: "\(Int(settingsManager.accelerationDelta)) ms",
+                            binding: $settingsManager.accelerationDelta,
+                            range: 10...200,
+                            step: 5
+                        )
+                        settingRow(
+                            title: "Accel. scale",
+                            value: "\(Int(settingsManager.accelerationScale))x",
+                            binding: $settingsManager.accelerationScale,
+                            range: 1...20,
+                            step: 1
+                        )
+                    }
 
-                    Divider()
-
-                    // Acceleration Delta
-                    settingRow(
-                        title: "Acceleration delta",
-                        value: "\(Int(settingsManager.accelerationDelta)) ms",
-                        binding: $settingsManager.accelerationDelta,
-                        range: 10...200,
-                        step: 5
-                    )
-
-                    // Acceleration Scale
-                    settingRow(
-                        title: "Acceleration scale",
-                        value: "\(Int(settingsManager.accelerationScale))x",
-                        binding: $settingsManager.accelerationScale,
-                        range: 1...20,
-                        step: 1
-                    )
-
-                    // Pulse Scale
                     settingRow(
                         title: "Easing intensity",
                         value: "\(Int(settingsManager.pulseScale))x",
@@ -198,33 +173,51 @@ struct SettingsView: View {
                         step: 1
                     )
                 }
-                .padding(.top, 8)
+                .padding(.top, 6)
             }
+            .font(.subheadline.weight(.semibold))
         }
-        .padding()
-        .background(Color(.controlBackgroundColor))
+        .padding(10)
+        .background(Color(.controlBackgroundColor).opacity(0.6))
         .cornerRadius(8)
     }
 
     private var optionsSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 8) {
             Text("Options")
-                .font(.headline)
+                .font(.subheadline.weight(.semibold))
 
-            Toggle("Auto start on login", isOn: $settingsManager.autoStartOnLogin)
-
-            Toggle("Animation easing", isOn: $settingsManager.animationEasingEnabled)
-
-            Toggle("Standard wheel direction", isOn: $settingsManager.standardWheelDirection)
-
-            Toggle("Horizontal smooth scrolling", isOn: $settingsManager.horizontalScrollingEnabled)
+            Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 8) {
+                GridRow {
+                    compactToggle("Auto start", isOn: $settingsManager.autoStartOnLogin)
+                    compactToggle("Animation easing", isOn: $settingsManager.animationEasingEnabled)
+                }
+                GridRow {
+                    compactToggle("Standard direction", isOn: $settingsManager.standardWheelDirection)
+                    compactToggle("Horizontal scroll", isOn: $settingsManager.horizontalScrollingEnabled)
+                }
+            }
         }
-        .padding()
-        .background(Color(.controlBackgroundColor))
+        .padding(10)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color(.controlBackgroundColor).opacity(0.6))
         .cornerRadius(8)
     }
 
     // MARK: - Helper Views
+
+    private func compactToggle(_ label: String, isOn: Binding<Bool>) -> some View {
+        HStack {
+            Text(label)
+                .font(.caption)
+            Spacer()
+            Toggle("", isOn: isOn)
+                .toggleStyle(.switch)
+                .controlSize(.mini)
+                .labelsHidden()
+        }
+        .frame(minWidth: 140)
+    }
 
     private func settingRow(
         title: String,
@@ -233,18 +226,20 @@ struct SettingsView: View {
         range: ClosedRange<Double>,
         step: Double
     ) -> some View {
-        VStack(spacing: 6) {
+        VStack(spacing: 4) {
             HStack {
                 Text(title)
+                    .font(.caption)
                     .foregroundColor(.primary)
                 Spacer()
                 Text(value)
+                    .font(.caption)
                     .foregroundColor(.secondary)
                     .monospacedDigit()
-                    .frame(width: 60, alignment: .trailing)
             }
 
             Slider(value: binding, in: range, step: step)
+                .controlSize(.small)
         }
     }
 }
